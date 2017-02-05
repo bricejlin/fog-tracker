@@ -14,16 +14,17 @@ let logs = [];
 
 const express = require('express');
 const app = express();
+app.set('view engine', 'pug');
 
 app.get('/', (req, res) => {
-  res.status(200).send(logs.join('\n'));
+  res.status(200).render('index', { logs });
 });
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('starting scheduler...', setToEST(Date.now()));
-  const job = schedule.scheduleJob('*/5 * * * *', () => {
+  const job = schedule.scheduleJob('* * * * * *', () => {
     makeRequest(job);
   });
 });
@@ -37,7 +38,7 @@ function makeRequest(scheduledJob) {
       if (!currentETag) {
         const txt = `First run! Updating currentETag to ${etagNew}`;
         console.log(txt);
-        logs.push(txt);
+        logs.unshift(txt);
         currentETag = etagNew;
       }
 
@@ -57,7 +58,7 @@ function makeRequest(scheduledJob) {
 
         const changed = `site changed!, ${setToEST(Date.now())}`;
         console.log(changed);
-        logs.push(changed);
+        logs.unshift(changed);
         dialog.info('STOP EVERYTHING YOU ARE DOING AND VISIT FEAROFGOD.COM');
 
         twilioClient.calls.create({
@@ -76,11 +77,10 @@ function makeRequest(scheduledJob) {
             scheduledJob.cancel();
           }
         });
-
       } else {
         const update = `pinged fearofgod.com. no changes. ${setToEST(Date.now())}`;
         console.log(update);
-        logs.push(update);
+        logs.unshift(update);
         currentETag = etagNew;
       }
     });
