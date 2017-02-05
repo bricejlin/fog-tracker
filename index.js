@@ -7,15 +7,16 @@ const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const dialog = require('dialog');
 
-//const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 let currentETag;
+let logs = [];
 
 const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  res.status(200).send('Hello, world!');
+  res.status(200).send(logs.join('\n'));
 });
 
 const PORT = process.env.PORT || 8080;
@@ -34,7 +35,9 @@ function makeRequest(scheduledJob) {
       const etagNew = res.headers.etag;
 
       if (!currentETag) {
-        console.log('First run! Updating currentETag to ', etagNew);
+        const txt = `First run! Updating currentETag to ${etagNew}`;
+        console.log(txt);
+        logs.push(txt);
         currentETag = etagNew;
       }
 
@@ -52,10 +55,11 @@ function makeRequest(scheduledJob) {
           console.log(message.sid); 
         });*/
 
-        console.log('site changed!', setToEST(Date.now()));
+        const changed = `site changed!, ${setToEST(Date.now())}`;
+        console.log(changed);
+        logs.push(changed);
         dialog.info('STOP EVERYTHING YOU ARE DOING AND VISIT FEAROFGOD.COM');
 
-        /*
         twilioClient.calls.create({
           url: 'http://handler.twilio.com/twiml/EH0a93ed4df693560800050b6dc4920cff',
           to: "+19174851586",
@@ -71,10 +75,12 @@ function makeRequest(scheduledJob) {
             console.log(call.sid);
             scheduledJob.cancel();
           }
-        }); */
+        });
 
       } else {
-        console.log('pinged fearofgod.com. no changes.', setToEST(Date.now()));
+        const update = `pinged fearofgod.com. no changes. ${setToEST(Date.now())}`;
+        console.log(update);
+        logs.push(update);
         currentETag = etagNew;
       }
     });
