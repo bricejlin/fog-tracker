@@ -7,7 +7,7 @@ const schedule = require('node-schedule');
 const moment = require('moment-timezone');
 const dialog = require('dialog');
 
-const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+//const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 let currentETag;
 
@@ -55,6 +55,7 @@ function makeRequest(scheduledJob) {
         console.log('site changed!', setToEST(Date.now()));
         dialog.info('STOP EVERYTHING YOU ARE DOING AND VISIT FEAROFGOD.COM');
 
+        /*
         twilioClient.calls.create({
           url: 'http://handler.twilio.com/twiml/EH0a93ed4df693560800050b6dc4920cff',
           to: "+19174851586",
@@ -70,7 +71,7 @@ function makeRequest(scheduledJob) {
             console.log(call.sid);
             scheduledJob.cancel();
           }
-        });
+        }); */
 
       } else {
         console.log('pinged fearofgod.com. no changes.', setToEST(Date.now()));
