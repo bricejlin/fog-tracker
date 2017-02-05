@@ -11,9 +11,20 @@ const twilioClient = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.e
 
 let currentETag;
 
-console.log('starting scheduler...', setToEST(Date.now()));
-const job = schedule.scheduleJob('*/5 * * * *', () => {
-  makeRequest(job);
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.status(200).send('Hello, world!');
+});
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+  console.log('starting scheduler...', setToEST(Date.now()));
+  const job = schedule.scheduleJob('*/5 * * * *', () => {
+    makeRequest(job);
+  });
 });
 
 function makeRequest(scheduledJob) {
