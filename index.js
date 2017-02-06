@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('starting scheduler...', setToEST(Date.now()));
-  const job = schedule.scheduleJob('* 1 * * *', () => {
+  const job = schedule.scheduleJob('* */1 * * *', () => {
     makeRequest(job);
   });
 });
