@@ -20,11 +20,29 @@ app.get('/', (req, res) => {
   res.status(200).render('index', { logs });
 });
 
+app.get('/debug-call', (req, res) => {
+  twilioClient.calls.create({
+    url: 'http://handler.twilio.com/twiml/EH0a93ed4df693560800050b6dc4920cff',
+    to: "+19174851586",
+    //to: '+16466966124', // kauf
+    //to: '+13472491888', // raf
+    from: "+13478942207",
+    ifMachine: 'Hangup'
+  }, function(err, call) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(call.sid);
+    }
+  });
+  res.status(200).send('triggered call');
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('starting scheduler...', setToEST(Date.now()));
-  const job = schedule.scheduleJob('* */1 * * *', () => {
+  const job = schedule.scheduleJob('* */5 3 * *', () => {
     makeRequest(job);
   });
 });
