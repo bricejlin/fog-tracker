@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index"
+    "start": "node index",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "engines": {
     "node": ">=6"
@@ -19,6 +21,8 @@
     "node-schedule": "^1.2.0",
     "pug": "^2.0.0-beta11",
     "request": "^2.79.0",
-    "twilio": "^2.11.1"
-  }
+    "twilio": "^2.11.1",
+    "snyk": "^1.189.0"
+  },
+  "snyk": true
 }
